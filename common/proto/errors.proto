@@ -1,0 +1,16 @@
+syntax = "proto3";
+package pb;
+
+enum E{
+    OK = 0; //成功
+    INVALID_ARGUMENT = 1; //无效的参数
+    SERVER_ERROR = 2; //服务异常
+
+    //db
+    DB_NAME_EMPTY=1001001;//名称为空
+    DB_IP_EMPTY=1001002;//IP为空
+    DB_PORT_EMPTY=1001003;//PORT为空
+    DB_PASSWORD_EMPTY=1001004;//密码为空
+    DB_USER_NAME_EMPTY1=1001008;//用户名为空
+}
+
