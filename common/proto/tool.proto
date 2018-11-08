@@ -7,14 +7,15 @@ message DbInfo {
     int32 port=3;
     string userName=4;//用户名
     string password=5;//密码
+    int64 id=6;
 }
 
 //创建数据库
-message CreateReq {
+message CreateOrModifyReq {
     DbInfo db=1;
 }
 
 //创建数据库
-message CreateRsp {
+message CreateOrModifyRsp {
 
 }

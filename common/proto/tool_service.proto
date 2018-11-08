@@ -4,6 +4,6 @@ package pb;
 import "tool.proto";
 
 service ToolService{
-   //创建数据库
-   rpc Create (CreateReq) returns (CreateRsp);
+   //创建或者修改数据库
+   rpc CreateOrModify (CreateOrModifyReq) returns (CreateOrModifyRsp);
 }

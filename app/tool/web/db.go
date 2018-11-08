@@ -10,10 +10,11 @@ import (
 
 type DB struct{}
 
-func (DB) Create(c *gin.Context) {
+//创建数据库
+func (DB) CreateOrModify(c *gin.Context) {
 
 	//参数解析
-	var req pb.CreateReq
+	var req pb.CreateOrModifyReq
 	err := c.BindJSON(&req)
 	if err != nil {
 		log.Errorf("failed to bind json,[err=%v]", err)
@@ -57,11 +58,24 @@ func (DB) Create(c *gin.Context) {
 		return
 	}
 
-	rsp, err := service.DB.Create(pb.NewContext(c), &req)
+	ctx := pb.NewContext(c)
+	var rsp *pb.CreateOrModifyRsp
+
+	if req.Db.Id > 0 {
+		rsp, err = service.DB.Update(ctx, &req)
+	} else {
+		rsp, err = service.DB.Create(ctx, &req)
+	}
+
 	if err != nil {
 		c.JSON(http.StatusOK, pb.ResponseWithError(err))
 		return
 	}
 
 	c.JSON(http.StatusOK, pb.ResponseToWin(rsp))
+}
+
+//修改数据库
+func (DB) Update(c *gin.Context) {
+
 }

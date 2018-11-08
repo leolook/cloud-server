@@ -6,7 +6,8 @@ import (
 )
 
 type DBService interface {
-	Create(*pb.Context, *pb.CreateReq) (*pb.CreateRsp, error)
+	Create(*pb.Context, *pb.CreateOrModifyReq) (*pb.CreateOrModifyRsp, error)
+	Update(*pb.Context, *pb.CreateOrModifyReq) (*pb.CreateOrModifyRsp, error)
 }
 
 var DB DBService = &impl.DB{}

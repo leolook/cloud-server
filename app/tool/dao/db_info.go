@@ -1,5 +1,7 @@
 package dao
 
+import "fmt"
+
 type DbInfoModel struct {
 	ID       int64  `gorm:"column:id"`
 	Name     string `gorm:"column:name"`
@@ -15,10 +17,47 @@ type DbInfoModel struct {
 type DbInfoModeler interface {
 	Save(model *DbInfoModel) error
 	FindByName(name string) ([]*DbInfoModel, error)
+	FindByID(id ...int64) ([]*DbInfoModel, error)
+	Modify(model *DbInfoModel) error
 }
 
 type DbInfoDao struct {
 	Base
+}
+
+func (t *DbInfoDao) Modify(model *DbInfoModel) error {
+
+	str, val := t.modifyColumn(model)
+	if str == "" {
+		return nil
+	}
+	str = fmt.Sprintf("update db_info set %s where id=?", str)
+	val = append(val, model.ID)
+
+	row := t.DB.Exec(str, val...)
+	if row.Error != nil {
+		return row.Error
+	}
+	return nil
+}
+
+func (t *DbInfoDao) FindByID(id ...int64) ([]*DbInfoModel, error) {
+
+	str := "select id,name,ip,port,user_name,password from db_info where delete_at=0 and "
+	if len(id) > 1 {
+		str += "id in(?)"
+	} else {
+		str += "id =?"
+	}
+
+	var models []*DbInfoModel
+	row := t.DB.Raw(str, id).Scan(&models)
+
+	ok, err := t.checkRow(row)
+	if ok && models != nil && len(models) > 0 {
+		return models, nil
+	}
+	return nil, err
 }
 
 func (t *DbInfoDao) Save(model *DbInfoModel) error {

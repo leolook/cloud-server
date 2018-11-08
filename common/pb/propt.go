@@ -8,6 +8,7 @@ const (
 	P_USER_NAME_EMPTY  = "用户名不能为空"
 	P_PASSWORD_EMPTY   = "密码不能为空"
 	P_NAME_REPEATED    = "名称重复"
+	P_INVALID_ID       = "无效的ID"
 )
 
 const (

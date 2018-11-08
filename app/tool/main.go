@@ -11,6 +11,6 @@ func init() {
 func main() {
 	g := gin.New()
 	r := g.Group("tool")
-	r.POST("create", web.DB{}.Create)
+	r.POST("createOrModify", web.DB{}.CreateOrModify)
 	g.Run("0.0.0.0:2030")
 }

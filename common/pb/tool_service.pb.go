@@ -28,8 +28,8 @@ const _ = grpc.SupportPackageIsVersion4
 // Client API for ToolService service
 
 type ToolServiceClient interface {
-	// 创建数据库
-	Create(ctx context.Context, in *CreateReq, opts ...grpc.CallOption) (*CreateRsp, error)
+	// 创建或者修改数据库
+	CreateOrModify(ctx context.Context, in *CreateOrModifyReq, opts ...grpc.CallOption) (*CreateOrModifyRsp, error)
 }
 
 type toolServiceClient struct {
@@ -40,9 +40,9 @@ func NewToolServiceClient(cc *grpc.ClientConn) ToolServiceClient {
 	return &toolServiceClient{cc}
 }
 
-func (c *toolServiceClient) Create(ctx context.Context, in *CreateReq, opts ...grpc.CallOption) (*CreateRsp, error) {
-	out := new(CreateRsp)
-	err := grpc.Invoke(ctx, "/pb.ToolService/Create", in, out, c.cc, opts...)
+func (c *toolServiceClient) CreateOrModify(ctx context.Context, in *CreateOrModifyReq, opts ...grpc.CallOption) (*CreateOrModifyRsp, error) {
+	out := new(CreateOrModifyRsp)
+	err := grpc.Invoke(ctx, "/pb.ToolService/CreateOrModify", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -52,28 +52,28 @@ func (c *toolServiceClient) Create(ctx context.Context, in *CreateReq, opts ...g
 // Server API for ToolService service
 
 type ToolServiceServer interface {
-	// 创建数据库
-	Create(context.Context, *CreateReq) (*CreateRsp, error)
+	// 创建或者修改数据库
+	CreateOrModify(context.Context, *CreateOrModifyReq) (*CreateOrModifyRsp, error)
 }
 
 func RegisterToolServiceServer(s *grpc.Server, srv ToolServiceServer) {
 	s.RegisterService(&_ToolService_serviceDesc, srv)
 }
 
-func _ToolService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateReq)
+func _ToolService_CreateOrModify_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateOrModifyReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ToolServiceServer).Create(ctx, in)
+		return srv.(ToolServiceServer).CreateOrModify(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.ToolService/Create",
+		FullMethod: "/pb.ToolService/CreateOrModify",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ToolServiceServer).Create(ctx, req.(*CreateReq))
+		return srv.(ToolServiceServer).CreateOrModify(ctx, req.(*CreateOrModifyReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -83,8 +83,8 @@ var _ToolService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*ToolServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Create",
-			Handler:    _ToolService_Create_Handler,
+			MethodName: "CreateOrModify",
+			Handler:    _ToolService_CreateOrModify_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -94,11 +94,12 @@ var _ToolService_serviceDesc = grpc.ServiceDesc{
 func init() { proto.RegisterFile("tool_service.proto", fileDescriptor5) }
 
 var fileDescriptor5 = []byte{
-	// 95 bytes of a gzipped FileDescriptorProto
+	// 104 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x2a, 0xc9, 0xcf, 0xcf,
 	0x89, 0x2f, 0x4e, 0x2d, 0x2a, 0xcb, 0x4c, 0x4e, 0xd5, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62,
-	0x2a, 0x48, 0x92, 0xe2, 0x02, 0x89, 0x43, 0xf8, 0x46, 0xa6, 0x5c, 0xdc, 0x21, 0xf9, 0xf9, 0x39,
-	0xc1, 0x10, 0x45, 0x42, 0x6a, 0x5c, 0x6c, 0xce, 0x45, 0xa9, 0x89, 0x25, 0xa9, 0x42, 0xbc, 0x7a,
-	0x05, 0x49, 0x7a, 0x10, 0x76, 0x50, 0x6a, 0xa1, 0x14, 0x32, 0xb7, 0xb8, 0x20, 0x89, 0x0d, 0xac,
-	0xdb, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0x4f, 0x3f, 0x54, 0xa6, 0x63, 0x00, 0x00, 0x00,
+	0x2a, 0x48, 0x92, 0xe2, 0x02, 0x89, 0x43, 0xf8, 0x46, 0xbe, 0x5c, 0xdc, 0x21, 0xf9, 0xf9, 0x39,
+	0xc1, 0x10, 0x45, 0x42, 0x76, 0x5c, 0x7c, 0xce, 0x45, 0xa9, 0x89, 0x25, 0xa9, 0xfe, 0x45, 0xbe,
+	0xf9, 0x29, 0x99, 0x69, 0x95, 0x42, 0xa2, 0x7a, 0x05, 0x49, 0x7a, 0xa8, 0x62, 0x41, 0xa9, 0x85,
+	0x52, 0xd8, 0x84, 0x8b, 0x0b, 0x92, 0xd8, 0xc0, 0xa6, 0x1a, 0x03, 0x02, 0x00, 0x00, 0xff, 0xff,
+	0x8e, 0x92, 0x3e, 0x0e, 0x7b, 0x00, 0x00, 0x00,
 }
