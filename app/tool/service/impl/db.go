@@ -12,8 +12,6 @@ type DB struct{}
 //创建数据库
 func (i *DB) Create(ctx *pb.Context, req *pb.CreateReq) (rsp *pb.CreateRsp, err error) {
 
-	log.Infof("%v", *ctx)
-
 	render := dao.Render()
 
 	//校验是否有重复名
@@ -41,6 +39,7 @@ func (i *DB) Create(ctx *pb.Context, req *pb.CreateReq) (rsp *pb.CreateRsp, err 
 	//保存数据
 	err = render.DbInfo.Save(model)
 	if err != nil {
+		log.Errorf("failed to save db info,[err=%v]", err)
 		return nil, pb.ToError(pb.E_SERVER_ERROR, pb.P_SERVER_ERROR)
 	}
 
