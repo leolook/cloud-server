@@ -1,6 +1,7 @@
 package pb
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"strings"
@@ -33,7 +34,7 @@ type rsp struct {
 }
 
 func ToError(code E, message string) error {
-	return fmt.Errorf(`{"code":%d,"msg":%s}`, code, message)
+	return fmt.Errorf(`{"code":%d,"msg":"%s"}`, code, message)
 }
 
 func ResponseToWin(data interface{}) interface{} {
@@ -53,5 +54,10 @@ func ResponseToFail(code E, message string) interface{} {
 }
 
 func ResponseWithError(err error) interface{} {
-	return err.Error()
+	var rsp rsp
+	er := json.Unmarshal([]byte(err.Error()), &rsp)
+	if er != nil {
+		return err.Error()
+	}
+	return rsp
 }

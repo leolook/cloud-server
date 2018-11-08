@@ -16,19 +16,32 @@ func (i *DB) Create(ctx *pb.Context, req *pb.CreateReq) (rsp *pb.CreateRsp, err 
 
 	render := dao.Render()
 
+	//校验是否有重复名
+	dbs, err := render.DbInfo.FindByName(req.Db.Name)
+	if err != nil {
+		log.Errorf("failed to find by name,[name=%s] [err=%v]", req.Db.Name, err)
+		return nil, pb.ToError(pb.E_SERVER_ERROR, pb.P_SERVER_ERROR)
+	}
+
+	if dbs != nil || len(dbs) > 0 {
+		return nil, pb.ToError(pb.E_DB_NAME_REPEATED, pb.P_NAME_REPEATED)
+	}
+
+	currentUnix := util.Time.Unix()
 	model := &dao.DbInfoModel{
 		Ip:       req.Db.Ip,
 		Name:     req.Db.Name,
-		Port:     int(req.Db.Port),
+		Port:     req.Db.Port,
 		UserName: req.Db.UserName,
 		Password: req.Db.Password,
-		CreateAt: util.Time.Unix(),
-		UpdateAt: util.Time.Unix(),
+		CreateAt: currentUnix,
+		UpdateAt: currentUnix,
 	}
 
+	//保存数据
 	err = render.DbInfo.Save(model)
 	if err != nil {
-		return nil, pb.ToError(pb.E_SERVER_ERROR, err.Error())
+		return nil, pb.ToError(pb.E_SERVER_ERROR, pb.P_SERVER_ERROR)
 	}
 
 	return nil, nil

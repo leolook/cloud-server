@@ -14,7 +14,7 @@ var (
 
 func init() {
 
-	flag.StringVar(&sqliteAddr, "sqliteAddr", "/Users/huwentao/go/src/cloud-server/tool.db", "sqlite address")
+	flag.StringVar(&sqliteAddr, "sqliteAddr", "tool.db", "sqlite address")
 	flag.Parse()
 
 	db, err := gorm.Open("sqlite3", sqliteAddr)
