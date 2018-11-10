@@ -15,5 +15,7 @@ func main() {
 	r.POST("db/detail", web.DB{}.Detail)
 	r.POST("db/page", web.DB{}.Page)
 	r.GET("db/allName", web.DB{}.AllName)
+	r.POST("db/connect", web.DB{}.Connect)
+	r.POST("db/tableModel", web.DB{}.TableModel)
 	g.Run("0.0.0.0:2030")
 }

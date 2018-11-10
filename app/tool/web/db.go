@@ -14,7 +14,7 @@ type DB struct{}
 func (DB) CreateOrModify(c *gin.Context) {
 
 	//参数解析
-	var req pb.CreateOrModifyReq
+	var req pb.DbCreateOrModifyReq
 	err := c.BindJSON(&req)
 	if err != nil {
 		log.Errorf("failed to bind json,[err=%v]", err)
@@ -59,7 +59,7 @@ func (DB) CreateOrModify(c *gin.Context) {
 	}
 
 	ctx := pb.NewContext(c)
-	var rsp *pb.CreateOrModifyRsp
+	var rsp *pb.DbCreateOrModifyRsp
 
 	if req.Db.Id > 0 {
 		rsp, err = service.DB.Update(ctx, &req)
@@ -130,7 +130,67 @@ func (DB) Page(c *gin.Context) {
 
 //获取所有数据库
 func (DB) AllName(c *gin.Context) {
-	rsp, err := service.DB.AllName(pb.NewContext(c), &pb.AllNameReq{})
+	rsp, err := service.DB.AllName(pb.NewContext(c), &pb.DbAllNameReq{})
+	if err != nil {
+		c.JSON(http.StatusOK, pb.ResponseWithError(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, pb.ResponseToWin(rsp))
+}
+
+//连接
+func (DB) Connect(c *gin.Context) {
+	//参数解析
+	var req pb.DbConnectReq
+	err := c.BindJSON(&req)
+	if err != nil {
+		log.Errorf("failed to bind json,[err=%v]", err)
+		c.JSON(http.StatusOK, pb.ResponseToFail(pb.E_INVALID_ARGUMENT, pb.P_INVALID_ARGUMENT))
+		return
+	}
+
+	if req.Id <= 0 {
+		c.JSON(http.StatusOK, pb.ResponseToFail(pb.E_INVALID_ARGUMENT, pb.P_OPTIN_EMPTY))
+		return
+	}
+
+	if req.DbName == "" {
+		c.JSON(http.StatusOK, pb.ResponseToFail(pb.E_INVALID_ARGUMENT, pb.P_NAME_EMPTY))
+		return
+	}
+
+	rsp, err := service.DB.Connect(pb.NewContext(c), &req)
+	if err != nil {
+		c.JSON(http.StatusOK, pb.ResponseWithError(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, pb.ResponseToWin(rsp))
+}
+
+//连接
+func (DB) TableModel(c *gin.Context) {
+	//参数解析
+	var req pb.DbConnectReq
+	err := c.BindJSON(&req)
+	if err != nil {
+		log.Errorf("failed to bind json,[err=%v]", err)
+		c.JSON(http.StatusOK, pb.ResponseToFail(pb.E_INVALID_ARGUMENT, pb.P_INVALID_ARGUMENT))
+		return
+	}
+
+	if req.Id <= 0 {
+		c.JSON(http.StatusOK, pb.ResponseToFail(pb.E_INVALID_ARGUMENT, pb.P_OPTIN_EMPTY))
+		return
+	}
+
+	if req.DbName == "" {
+		c.JSON(http.StatusOK, pb.ResponseToFail(pb.E_INVALID_ARGUMENT, pb.P_NAME_EMPTY))
+		return
+	}
+
+	rsp, err := service.DB.Connect(pb.NewContext(c), &req)
 	if err != nil {
 		c.JSON(http.StatusOK, pb.ResponseWithError(err))
 		return

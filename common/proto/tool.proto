@@ -2,7 +2,7 @@ syntax = "proto3";
 package pb;
 
 message DbInfo {
-    string name=1;//名称
+    string name=1;//连接名称
     string ip=2;
     int32 port=3;
     string userName=4;//用户名
@@ -11,12 +11,12 @@ message DbInfo {
 }
 
 //创建数据库
-message CreateOrModifyReq {
+message DbCreateOrModifyReq {
     DbInfo db=1;
 }
 
 //创建数据库
-message CreateOrModifyRsp {
+message DbCreateOrModifyRsp {
 
 }
 
@@ -44,11 +44,35 @@ message DbPageRsp{
 }
 
 //所有数据库
-message AllNameReq{
+message DbAllNameReq{
 
 }
 
 //所有数据库
-message AllNameRsp{
+message DbAllNameRsp{
    repeated DbInfo dbs=1;
+}
+
+//连接
+message DbConnectReq{
+   int64 id=1;
+   string dbName=2;//数据库名称
+}
+
+//连接
+message DbConnectRsp{
+   string key=1;
+   int64 id=2;
+   string dbName=3;
+   repeated string tableName=4;
+}
+
+//表模型
+message DbTableModelReq{
+   string key=1;
+}
+
+//表模型
+message DbTableModelRsp{
+   string model=2;
 }

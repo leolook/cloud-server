@@ -29,13 +29,15 @@ const _ = grpc.SupportPackageIsVersion4
 
 type ToolServiceClient interface {
 	// 创建或者修改数据库
-	CreateOrModify(ctx context.Context, in *CreateOrModifyReq, opts ...grpc.CallOption) (*CreateOrModifyRsp, error)
+	DbCreateOrModify(ctx context.Context, in *DbCreateOrModifyReq, opts ...grpc.CallOption) (*DbCreateOrModifyRsp, error)
 	// 数据库详情
 	DbDetailByID(ctx context.Context, in *DbDetailByIDReq, opts ...grpc.CallOption) (*DbDetailByIDRsp, error)
 	// 数据库分页
 	DbPage(ctx context.Context, in *DbPageReq, opts ...grpc.CallOption) (*DbPageRsp, error)
 	// 所有数据库
-	AllName(ctx context.Context, in *AllNameReq, opts ...grpc.CallOption) (*AllNameRsp, error)
+	DbAllName(ctx context.Context, in *DbAllNameReq, opts ...grpc.CallOption) (*DbAllNameRsp, error)
+	// 所有数据库
+	DbConnect(ctx context.Context, in *DbConnectReq, opts ...grpc.CallOption) (*DbConnectRsp, error)
 }
 
 type toolServiceClient struct {
@@ -46,9 +48,9 @@ func NewToolServiceClient(cc *grpc.ClientConn) ToolServiceClient {
 	return &toolServiceClient{cc}
 }
 
-func (c *toolServiceClient) CreateOrModify(ctx context.Context, in *CreateOrModifyReq, opts ...grpc.CallOption) (*CreateOrModifyRsp, error) {
-	out := new(CreateOrModifyRsp)
-	err := grpc.Invoke(ctx, "/pb.ToolService/CreateOrModify", in, out, c.cc, opts...)
+func (c *toolServiceClient) DbCreateOrModify(ctx context.Context, in *DbCreateOrModifyReq, opts ...grpc.CallOption) (*DbCreateOrModifyRsp, error) {
+	out := new(DbCreateOrModifyRsp)
+	err := grpc.Invoke(ctx, "/pb.ToolService/DbCreateOrModify", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -73,9 +75,18 @@ func (c *toolServiceClient) DbPage(ctx context.Context, in *DbPageReq, opts ...g
 	return out, nil
 }
 
-func (c *toolServiceClient) AllName(ctx context.Context, in *AllNameReq, opts ...grpc.CallOption) (*AllNameRsp, error) {
-	out := new(AllNameRsp)
-	err := grpc.Invoke(ctx, "/pb.ToolService/AllName", in, out, c.cc, opts...)
+func (c *toolServiceClient) DbAllName(ctx context.Context, in *DbAllNameReq, opts ...grpc.CallOption) (*DbAllNameRsp, error) {
+	out := new(DbAllNameRsp)
+	err := grpc.Invoke(ctx, "/pb.ToolService/DbAllName", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *toolServiceClient) DbConnect(ctx context.Context, in *DbConnectReq, opts ...grpc.CallOption) (*DbConnectRsp, error) {
+	out := new(DbConnectRsp)
+	err := grpc.Invoke(ctx, "/pb.ToolService/DbConnect", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -86,33 +97,35 @@ func (c *toolServiceClient) AllName(ctx context.Context, in *AllNameReq, opts ..
 
 type ToolServiceServer interface {
 	// 创建或者修改数据库
-	CreateOrModify(context.Context, *CreateOrModifyReq) (*CreateOrModifyRsp, error)
+	DbCreateOrModify(context.Context, *DbCreateOrModifyReq) (*DbCreateOrModifyRsp, error)
 	// 数据库详情
 	DbDetailByID(context.Context, *DbDetailByIDReq) (*DbDetailByIDRsp, error)
 	// 数据库分页
 	DbPage(context.Context, *DbPageReq) (*DbPageRsp, error)
 	// 所有数据库
-	AllName(context.Context, *AllNameReq) (*AllNameRsp, error)
+	DbAllName(context.Context, *DbAllNameReq) (*DbAllNameRsp, error)
+	// 所有数据库
+	DbConnect(context.Context, *DbConnectReq) (*DbConnectRsp, error)
 }
 
 func RegisterToolServiceServer(s *grpc.Server, srv ToolServiceServer) {
 	s.RegisterService(&_ToolService_serviceDesc, srv)
 }
 
-func _ToolService_CreateOrModify_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateOrModifyReq)
+func _ToolService_DbCreateOrModify_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DbCreateOrModifyReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ToolServiceServer).CreateOrModify(ctx, in)
+		return srv.(ToolServiceServer).DbCreateOrModify(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.ToolService/CreateOrModify",
+		FullMethod: "/pb.ToolService/DbCreateOrModify",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ToolServiceServer).CreateOrModify(ctx, req.(*CreateOrModifyReq))
+		return srv.(ToolServiceServer).DbCreateOrModify(ctx, req.(*DbCreateOrModifyReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -153,20 +166,38 @@ func _ToolService_DbPage_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ToolService_AllName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AllNameReq)
+func _ToolService_DbAllName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DbAllNameReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ToolServiceServer).AllName(ctx, in)
+		return srv.(ToolServiceServer).DbAllName(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.ToolService/AllName",
+		FullMethod: "/pb.ToolService/DbAllName",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ToolServiceServer).AllName(ctx, req.(*AllNameReq))
+		return srv.(ToolServiceServer).DbAllName(ctx, req.(*DbAllNameReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ToolService_DbConnect_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DbConnectReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ToolServiceServer).DbConnect(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.ToolService/DbConnect",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ToolServiceServer).DbConnect(ctx, req.(*DbConnectReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -176,8 +207,8 @@ var _ToolService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*ToolServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateOrModify",
-			Handler:    _ToolService_CreateOrModify_Handler,
+			MethodName: "DbCreateOrModify",
+			Handler:    _ToolService_DbCreateOrModify_Handler,
 		},
 		{
 			MethodName: "DbDetailByID",
@@ -188,8 +219,12 @@ var _ToolService_serviceDesc = grpc.ServiceDesc{
 			Handler:    _ToolService_DbPage_Handler,
 		},
 		{
-			MethodName: "AllName",
-			Handler:    _ToolService_AllName_Handler,
+			MethodName: "DbAllName",
+			Handler:    _ToolService_DbAllName_Handler,
+		},
+		{
+			MethodName: "DbConnect",
+			Handler:    _ToolService_DbConnect_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -199,17 +234,18 @@ var _ToolService_serviceDesc = grpc.ServiceDesc{
 func init() { proto.RegisterFile("tool_service.proto", fileDescriptor5) }
 
 var fileDescriptor5 = []byte{
-	// 177 bytes of a gzipped FileDescriptorProto
+	// 198 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x2a, 0xc9, 0xcf, 0xcf,
 	0x89, 0x2f, 0x4e, 0x2d, 0x2a, 0xcb, 0x4c, 0x4e, 0xd5, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62,
-	0x2a, 0x48, 0x92, 0xe2, 0x02, 0x89, 0x43, 0xf8, 0x46, 0xb7, 0x18, 0xb9, 0xb8, 0x43, 0xf2, 0xf3,
-	0x73, 0x82, 0x21, 0xaa, 0x84, 0xec, 0xb8, 0xf8, 0x9c, 0x8b, 0x52, 0x13, 0x4b, 0x52, 0xfd, 0x8b,
-	0x7c, 0xf3, 0x53, 0x32, 0xd3, 0x2a, 0x85, 0x44, 0xf5, 0x0a, 0x92, 0xf4, 0x50, 0xc5, 0x82, 0x52,
-	0x0b, 0xa5, 0xb0, 0x09, 0x17, 0x17, 0x08, 0x59, 0x70, 0xf1, 0xb8, 0x24, 0xb9, 0xa4, 0x96, 0x24,
-	0x66, 0xe6, 0x38, 0x55, 0x7a, 0xba, 0x08, 0x09, 0x83, 0x94, 0x21, 0x8b, 0x80, 0xf4, 0x62, 0x0a,
-	0x16, 0x17, 0x08, 0xa9, 0x71, 0xb1, 0xb9, 0x24, 0x05, 0x24, 0xa6, 0xa7, 0x0a, 0xf1, 0x42, 0xa4,
-	0x41, 0x6c, 0x90, 0x6a, 0x64, 0x6e, 0x71, 0x81, 0x90, 0x26, 0x17, 0xbb, 0x63, 0x4e, 0x8e, 0x5f,
-	0x62, 0x6e, 0xaa, 0x10, 0x1f, 0x48, 0x06, 0xca, 0x01, 0xa9, 0x44, 0xe1, 0x17, 0x17, 0x24, 0xb1,
-	0x81, 0xfd, 0x68, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0x2c, 0x0a, 0xd2, 0xb8, 0x09, 0x01, 0x00,
-	0x00,
+	0x2a, 0x48, 0x92, 0xe2, 0x02, 0x89, 0x43, 0xf8, 0x46, 0xd3, 0x99, 0xb8, 0xb8, 0x43, 0xf2, 0xf3,
+	0x73, 0x82, 0x21, 0xaa, 0x84, 0x5c, 0xb8, 0x04, 0x5c, 0x92, 0x9c, 0x8b, 0x52, 0x13, 0x4b, 0x52,
+	0xfd, 0x8b, 0x7c, 0xf3, 0x53, 0x32, 0xd3, 0x2a, 0x85, 0xc4, 0xf5, 0x0a, 0x92, 0xf4, 0xd0, 0x45,
+	0x83, 0x52, 0x0b, 0xa5, 0xb0, 0x4b, 0x14, 0x17, 0x08, 0x59, 0x70, 0xf1, 0xb8, 0x24, 0xb9, 0xa4,
+	0x96, 0x24, 0x66, 0xe6, 0x38, 0x55, 0x7a, 0xba, 0x08, 0x09, 0x43, 0x14, 0x22, 0x44, 0x40, 0xba,
+	0x31, 0x05, 0x8b, 0x0b, 0x84, 0xd4, 0xb8, 0xd8, 0x5c, 0x92, 0x02, 0x12, 0xd3, 0x53, 0x85, 0x78,
+	0x21, 0xd2, 0x20, 0x36, 0x48, 0x35, 0x32, 0xb7, 0xb8, 0x40, 0x48, 0x9f, 0x8b, 0xd3, 0x25, 0xc9,
+	0x31, 0x27, 0xc7, 0x2f, 0x31, 0x37, 0x55, 0x48, 0x00, 0x22, 0x07, 0xe5, 0x82, 0x54, 0xa3, 0x89,
+	0xc0, 0x34, 0x38, 0xe7, 0xe7, 0xe5, 0xa5, 0x26, 0x97, 0xc0, 0x34, 0x40, 0xb9, 0x48, 0x1a, 0x60,
+	0x22, 0xc5, 0x05, 0x49, 0x6c, 0xe0, 0x00, 0x32, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0x27, 0x78,
+	0xdb, 0x19, 0x46, 0x01, 0x00, 0x00,
 }

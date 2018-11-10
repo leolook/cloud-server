@@ -5,11 +5,15 @@ import "tool.proto";
 
 service ToolService{
    //创建或者修改数据库
-   rpc CreateOrModify (CreateOrModifyReq) returns (CreateOrModifyRsp);
+   rpc DbCreateOrModify (DbCreateOrModifyReq) returns (DbCreateOrModifyRsp);
    //数据库详情
    rpc DbDetailByID(DbDetailByIDReq)returns (DbDetailByIDRsp);
    //数据库分页
    rpc DbPage(DbPageReq)returns (DbPageRsp);
    //所有数据库
-   rpc AllName(AllNameReq)returns (AllNameRsp);
+   rpc DbAllName(DbAllNameReq)returns (DbAllNameRsp);
+   //所有数据库
+   rpc DbConnect(DbConnectReq)returns (DbConnectRsp);
+   //表模型
+   rpc DbTableModel(DbTableModelReq)returns (DbTableModelRsp);
 }

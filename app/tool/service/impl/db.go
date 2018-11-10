@@ -5,12 +5,22 @@ import (
 	"cloud-server/common/pb"
 	"cloud-server/common/util"
 	"cloud-server/lib/log"
+	"cloud-server/lib/mysql"
+	"encoding/base64"
+	"fmt"
+	"github.com/jinzhu/gorm"
 )
 
 type DB struct{}
 
+var connectMp map[string]*gorm.DB
+
+type tableModel struct {
+	Name string `gorm:"column:name"`
+}
+
 //创建数据库
-func (i *DB) Create(ctx *pb.Context, req *pb.CreateOrModifyReq) (rsp *pb.CreateOrModifyRsp, err error) {
+func (i *DB) Create(ctx *pb.Context, req *pb.DbCreateOrModifyReq) (rsp *pb.DbCreateOrModifyRsp, err error) {
 
 	render := dao.Render()
 
@@ -47,7 +57,7 @@ func (i *DB) Create(ctx *pb.Context, req *pb.CreateOrModifyReq) (rsp *pb.CreateO
 }
 
 //修改数据库
-func (i *DB) Update(ctx *pb.Context, req *pb.CreateOrModifyReq) (rsp *pb.CreateOrModifyRsp, err error) {
+func (i *DB) Update(ctx *pb.Context, req *pb.DbCreateOrModifyReq) (rsp *pb.DbCreateOrModifyRsp, err error) {
 
 	db := req.Db
 
@@ -180,7 +190,7 @@ func (i *DB) Page(ctx *pb.Context, req *pb.DbPageReq) (rsp *pb.DbPageRsp, err er
 }
 
 //所有数据库
-func (i *DB) AllName(ctx *pb.Context, req *pb.AllNameReq) (rsp *pb.AllNameRsp, err error) {
+func (i *DB) AllName(ctx *pb.Context, req *pb.DbAllNameReq) (rsp *pb.DbAllNameRsp, err error) {
 
 	render := dao.Render()
 
@@ -190,7 +200,7 @@ func (i *DB) AllName(ctx *pb.Context, req *pb.AllNameReq) (rsp *pb.AllNameRsp, e
 		return nil, pb.ToError(pb.E_SERVER_ERROR, pb.P_SERVER_ERROR)
 	}
 
-	rsp = &pb.AllNameRsp{
+	rsp = &pb.DbAllNameRsp{
 		Dbs: nil,
 	}
 
@@ -204,6 +214,72 @@ func (i *DB) AllName(ctx *pb.Context, req *pb.AllNameReq) (rsp *pb.AllNameRsp, e
 		tmp[i] = v.ToDbInfo()
 	}
 	rsp.Dbs = tmp
+
+	return rsp, nil
+}
+
+//连接
+func (i *DB) Connect(ctx *pb.Context, req *pb.DbConnectReq) (rsp *pb.DbConnectRsp, err error) {
+
+	id, dbName := req.Id, req.DbName
+	render := dao.Render()
+
+	//获取数据库信息
+	dbs, err := render.DbInfo.FindByID(id)
+	if err != nil {
+		log.Errorf("failed to find db through id,[id=%+v] [err=%v]", id, err)
+		return nil, pb.ToError(pb.E_SERVER_ERROR, pb.P_SERVER_ERROR)
+	}
+
+	if dbs == nil || len(dbs) <= 0 {
+		log.Warnf("not find db through id,[id=%v]", id)
+		return nil, pb.ToError(pb.E_NO_DATA, pb.P_NO_DATA)
+	}
+
+	ip, port, userName, password := dbs[0].Ip, dbs[0].Port, dbs[0].UserName, dbs[0].Password
+	key := fmt.Sprintf("%s:%s:%s:%s:%d", ip, port, userName, dbName, id)
+	key = base64.StdEncoding.EncodeToString([]byte(key))
+
+	if connectMp == nil {
+		connectMp = make(map[string]*gorm.DB)
+	}
+
+	rsp = &pb.DbConnectRsp{
+		Key:    key,
+		Id:     id,
+		DbName: dbName,
+	}
+
+	var client *gorm.DB
+
+	if v, ok := connectMp[key]; ok && v != nil {
+		client = v
+	} else {
+		client, err = mysql.NewClient(ip, port, userName, password, dbName)
+		if err != nil {
+			log.Errorf("failed to connect db,[err=%v]", err)
+			return nil, pb.ToError(pb.E_DB_CONNECT_FAIL, err.Error())
+		}
+		connectMp[key] = client
+	}
+
+	row, err := client.DB().Query("show tables")
+	if err != nil {
+		return nil, pb.ToError(pb.E_DB_CONNECT_FAIL, err.Error())
+	}
+	defer row.Close()
+	tables := make([]string, 0)
+
+	for row.Next() {
+		var tmp string
+		err = row.Scan(&tmp)
+		if err != nil {
+			return nil, pb.ToError(pb.E_DB_CONNECT_FAIL, err.Error())
+		}
+		tables = append(tables, tmp)
+	}
+
+	rsp.TableName = tables
 
 	return rsp, nil
 }

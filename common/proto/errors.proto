@@ -5,6 +5,7 @@ enum E{
     OK = 0; //成功
     INVALID_ARGUMENT = 1; //无效的参数
     SERVER_ERROR = 2; //服务异常
+    NO_DATA=3;//没有数据
 
     //db
     DB_NAME_EMPTY=1001001;//名称为空
@@ -13,5 +14,6 @@ enum E{
     DB_PASSWORD_EMPTY=1001004;//密码为空
     DB_USER_NAME_EMPTY1=1001008;//用户名为空
     DB_NAME_REPEATED=1001009;//名称重复
+    DB_CONNECT_FAIL=1001010;//连接失败
 }
 

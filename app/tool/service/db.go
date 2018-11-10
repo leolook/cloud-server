@@ -6,11 +6,12 @@ import (
 )
 
 type DBService interface {
-	Create(*pb.Context, *pb.CreateOrModifyReq) (*pb.CreateOrModifyRsp, error)
-	Update(*pb.Context, *pb.CreateOrModifyReq) (*pb.CreateOrModifyRsp, error)
+	Create(*pb.Context, *pb.DbCreateOrModifyReq) (*pb.DbCreateOrModifyRsp, error)
+	Update(*pb.Context, *pb.DbCreateOrModifyReq) (*pb.DbCreateOrModifyRsp, error)
 	Detail(*pb.Context, *pb.DbDetailByIDReq) (*pb.DbDetailByIDRsp, error)
 	Page(*pb.Context, *pb.DbPageReq) (*pb.DbPageRsp, error)
-	AllName(*pb.Context, *pb.AllNameReq) (*pb.AllNameRsp, error)
+	AllName(*pb.Context, *pb.DbAllNameReq) (*pb.DbAllNameRsp, error)
+	Connect(*pb.Context, *pb.DbConnectReq) (*pb.DbConnectRsp, error)
 }
 
 var DB DBService = &impl.DB{}

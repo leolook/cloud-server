@@ -34,7 +34,11 @@ type rsp struct {
 }
 
 func ToError(code E, message string) error {
-	return fmt.Errorf(`{"code":%d,"msg":"%s"}`, code, message)
+	data, err := json.Marshal(&rsp{Code: int32(code), Message: message})
+	if err != nil {
+		return err
+	}
+	return fmt.Errorf("%s", string(data))
 }
 
 func ResponseToWin(data interface{}) interface{} {
@@ -47,7 +51,7 @@ func ResponseToWin(data interface{}) interface{} {
 
 func ResponseToFail(code E, message string) interface{} {
 	return &rsp{
-		Code:    int32(E_OK),
+		Code:    int32(code),
 		Message: message,
 		Data:    nil,
 	}
