@@ -19,3 +19,36 @@ message CreateOrModifyReq {
 message CreateOrModifyRsp {
 
 }
+
+//数据库详情
+message DbDetailByIDReq{
+   int64 id=1;
+}
+
+message DbDetailByIDRsp{
+   DbInfo db=1;
+}
+
+//数据库分页
+message DbPageReq{
+   int32 pageNo=1;
+   int32 pageSize=2;
+}
+
+//数据库分页
+message DbPageRsp{
+   repeated DbInfo dbs=1;
+   int32 pageNo=2;
+   int32 pageSize=3;
+   int32 isMore=4;//1-否 2-是
+}
+
+//所有数据库
+message AllNameReq{
+
+}
+
+//所有数据库
+message AllNameRsp{
+   repeated DbInfo dbs=1;
+}

@@ -8,5 +8,5 @@ then
     ln -s ../../common/pb/ proto
 fi
 protoc --go_out=plugins=grpc:./common/pb ./common/proto/*.proto  ./common/proto/*.proto -I./common/proto/ -I./common/proto/
-cd common/pb/;
-ls *.pb.go | xargs -n1 -IX bash -c 'sed s/,omitempty// X > X.tmp && mv X{.tmp,}'
+###cd common/pb/;
+###ls *.pb.go | xargs -n1 -IX bash -c 'sed s/,omitempty// X > X.tmp && mv X{.tmp,}'

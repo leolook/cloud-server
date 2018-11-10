@@ -1,6 +1,9 @@
 package dao
 
-import "fmt"
+import (
+	"cloud-server/common/pb"
+	"fmt"
+)
 
 type DbInfoModel struct {
 	ID       int64  `gorm:"column:id"`
@@ -14,15 +17,55 @@ type DbInfoModel struct {
 	DeleteAt int64  `gorm:"column:delete_at"`
 }
 
+func (t *DbInfoModel) ToDbInfo() *pb.DbInfo {
+	return &pb.DbInfo{
+		Name:     t.Name,
+		Ip:       t.Ip,
+		Port:     t.Port,
+		UserName: t.UserName,
+		Password: t.Password,
+		Id:       t.ID,
+	}
+}
+
 type DbInfoModeler interface {
 	Save(model *DbInfoModel) error
 	FindByName(name string) ([]*DbInfoModel, error)
 	FindByID(id ...int64) ([]*DbInfoModel, error)
 	Modify(model *DbInfoModel) error
+	Page(start, end int32) ([]*DbInfoModel, error)
+	AllName() ([]*DbInfoModel, error)
 }
 
 type DbInfoDao struct {
 	Base
+}
+
+func (t *DbInfoDao) AllName() ([]*DbInfoModel, error) {
+	str := "select id,name from db_info where delete_at =0"
+
+	var models []*DbInfoModel
+	row := t.DB.Raw(str).Scan(&models)
+
+	ok, err := t.checkRow(row)
+	if ok && models != nil && len(models) > 0 {
+		return models, nil
+	}
+	return nil, err
+}
+
+func (t *DbInfoDao) Page(start, end int32) ([]*DbInfoModel, error) {
+
+	str := "select * from db_info where delete_at =0 limit ?,?"
+
+	var models []*DbInfoModel
+	row := t.DB.Raw(str, start, end).Scan(&models)
+
+	ok, err := t.checkRow(row)
+	if ok && models != nil && len(models) > 0 {
+		return models, nil
+	}
+	return nil, err
 }
 
 func (t *DbInfoDao) Modify(model *DbInfoModel) error {

@@ -75,7 +75,66 @@ func (DB) CreateOrModify(c *gin.Context) {
 	c.JSON(http.StatusOK, pb.ResponseToWin(rsp))
 }
 
-//修改数据库
-func (DB) Update(c *gin.Context) {
+//数据库详情
+func (DB) Detail(c *gin.Context) {
+	//参数解析
+	var req pb.DbDetailByIDReq
+	err := c.BindJSON(&req)
+	if err != nil {
+		log.Errorf("failed to bind json,[err=%v]", err)
+		c.JSON(http.StatusOK, pb.ResponseToFail(pb.E_INVALID_ARGUMENT, pb.P_INVALID_ARGUMENT))
+		return
+	}
 
+	if req.Id <= 0 {
+		c.JSON(http.StatusOK, pb.ResponseToFail(pb.E_INVALID_ARGUMENT, pb.P_INVALID_ARGUMENT))
+		return
+	}
+
+	rsp, err := service.DB.Detail(pb.NewContext(c), &req)
+	if err != nil {
+		c.JSON(http.StatusOK, pb.ResponseWithError(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, pb.ResponseToWin(rsp))
+}
+
+//数据库分页
+func (DB) Page(c *gin.Context) {
+	//参数解析
+	var req pb.DbPageReq
+	err := c.BindJSON(&req)
+	if err != nil {
+		log.Errorf("failed to bind json,[err=%v]", err)
+		c.JSON(http.StatusOK, pb.ResponseToFail(pb.E_INVALID_ARGUMENT, pb.P_INVALID_ARGUMENT))
+		return
+	}
+
+	//参数默认
+	if req.PageNo <= 0 {
+		req.PageNo = 1
+	}
+	if req.PageSize <= 0 {
+		req.PageSize = 10
+	}
+
+	rsp, err := service.DB.Page(pb.NewContext(c), &req)
+	if err != nil {
+		c.JSON(http.StatusOK, pb.ResponseWithError(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, pb.ResponseToWin(rsp))
+}
+
+//获取所有数据库
+func (DB) AllName(c *gin.Context) {
+	rsp, err := service.DB.AllName(pb.NewContext(c), &pb.AllNameReq{})
+	if err != nil {
+		c.JSON(http.StatusOK, pb.ResponseWithError(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, pb.ResponseToWin(rsp))
 }
