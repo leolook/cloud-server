@@ -1,6 +1,8 @@
 syntax = "proto3";
 package pb;
 
+import "common.proto";
+
 message DbInfo {
     string name=1;//连接名称
     string ip=2;
@@ -37,10 +39,8 @@ message DbPageReq{
 
 //数据库分页
 message DbPageRsp{
-   repeated DbInfo dbs=1;
-   int32 pageNo=2;
-   int32 pageSize=3;
-   int32 isMore=4;//1-否 2-是
+   repeated DbInfo list=1;
+   PageRsp page=2;
 }
 
 //所有数据库
@@ -70,9 +70,10 @@ message DbConnectRsp{
 //表模型
 message DbTableModelReq{
    string key=1;
+   string name=2;//表名
 }
 
 //表模型
 message DbTableModelRsp{
-   string model=2;
+   string model=1;
 }

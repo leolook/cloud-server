@@ -119,6 +119,8 @@ func (DB) Page(c *gin.Context) {
 		req.PageSize = 10
 	}
 
+	log.Infof("pageNo=%d,pageSize=%d", req.PageNo, req.PageSize)
+
 	rsp, err := service.DB.Page(pb.NewContext(c), &req)
 	if err != nil {
 		c.JSON(http.StatusOK, pb.ResponseWithError(err))
@@ -172,7 +174,7 @@ func (DB) Connect(c *gin.Context) {
 //连接
 func (DB) TableModel(c *gin.Context) {
 	//参数解析
-	var req pb.DbConnectReq
+	var req pb.DbTableModelReq
 	err := c.BindJSON(&req)
 	if err != nil {
 		log.Errorf("failed to bind json,[err=%v]", err)
@@ -180,17 +182,17 @@ func (DB) TableModel(c *gin.Context) {
 		return
 	}
 
-	if req.Id <= 0 {
-		c.JSON(http.StatusOK, pb.ResponseToFail(pb.E_INVALID_ARGUMENT, pb.P_OPTIN_EMPTY))
+	if req.Key == "" {
+		c.JSON(http.StatusOK, pb.ResponseToFail(pb.E_INVALID_ARGUMENT, pb.P_KEY_EMPTY))
 		return
 	}
 
-	if req.DbName == "" {
-		c.JSON(http.StatusOK, pb.ResponseToFail(pb.E_INVALID_ARGUMENT, pb.P_NAME_EMPTY))
+	if req.Name == "" {
+		c.JSON(http.StatusOK, pb.ResponseToFail(pb.E_INVALID_ARGUMENT, pb.P_TABLE_NAME_EMPTY))
 		return
 	}
 
-	rsp, err := service.DB.Connect(pb.NewContext(c), &req)
+	rsp, err := service.DB.TableModel(pb.NewContext(c), &req)
 	if err != nil {
 		c.JSON(http.StatusOK, pb.ResponseWithError(err))
 		return

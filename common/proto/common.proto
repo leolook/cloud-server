@@ -1,0 +1,8 @@
+syntax = "proto3";
+package pb;
+
+message PageRsp{
+   int32 current=1;
+   int32 pageSize=2;
+   int32 total=3;//总页数
+}

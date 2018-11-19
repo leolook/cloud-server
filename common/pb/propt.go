@@ -10,6 +10,13 @@ const (
 	P_NAME_REPEATED    = "名称重复"
 	P_INVALID_ID       = "无效的ID"
 	P_OPTIN_EMPTY      = "请选择一项"
+	P_KEY_EMPTY        = "key不能为空"
+	P_TABLE_NAME_EMPTY = "表名不能为空"
+)
+
+const (
+	P_PLEASE_CONNECT_DB = "请先连接数据库"
+	P_NOT_FOUND_DB      = "没有找到数据库连接"
 )
 
 const (

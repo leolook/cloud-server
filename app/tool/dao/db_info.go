@@ -34,6 +34,7 @@ type DbInfoModeler interface {
 	FindByID(id ...int64) ([]*DbInfoModel, error)
 	Modify(model *DbInfoModel) error
 	Page(start, end int32) ([]*DbInfoModel, error)
+	PageCount() (int32, error)
 	AllName() ([]*DbInfoModel, error)
 }
 
@@ -42,7 +43,7 @@ type DbInfoDao struct {
 }
 
 func (t *DbInfoDao) AllName() ([]*DbInfoModel, error) {
-	str := "select id,name from db_info where delete_at =0"
+	str := "select id,name from db_info where delete_at =0 order by id desc "
 
 	var models []*DbInfoModel
 	row := t.DB.Raw(str).Scan(&models)
@@ -56,7 +57,7 @@ func (t *DbInfoDao) AllName() ([]*DbInfoModel, error) {
 
 func (t *DbInfoDao) Page(start, end int32) ([]*DbInfoModel, error) {
 
-	str := "select * from db_info where delete_at =0 limit ?,?"
+	str := "select * from db_info where delete_at =0 order by id desc limit ?,?"
 
 	var models []*DbInfoModel
 	row := t.DB.Raw(str, start, end).Scan(&models)
@@ -66,6 +67,20 @@ func (t *DbInfoDao) Page(start, end int32) ([]*DbInfoModel, error) {
 		return models, nil
 	}
 	return nil, err
+}
+
+func (t *DbInfoDao) PageCount() (int32, error) {
+
+	str := "select count(id) from db_info where delete_at =0"
+
+	var count int32
+	row := t.DB.Raw(str).Count(&count)
+
+	ok, err := t.checkRow(row)
+	if ok && count > 0 {
+		return count, nil
+	}
+	return 0, err
 }
 
 func (t *DbInfoDao) Modify(model *DbInfoModel) error {

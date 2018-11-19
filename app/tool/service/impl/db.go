@@ -6,6 +6,7 @@ import (
 	"cloud-server/common/util"
 	"cloud-server/lib/log"
 	"cloud-server/lib/mysql"
+	"database/sql"
 	"encoding/base64"
 	"fmt"
 	"github.com/jinzhu/gorm"
@@ -14,10 +15,6 @@ import (
 type DB struct{}
 
 var connectMp map[string]*gorm.DB
-
-type tableModel struct {
-	Name string `gorm:"column:name"`
-}
 
 //创建数据库
 func (i *DB) Create(ctx *pb.Context, req *pb.DbCreateOrModifyReq) (rsp *pb.DbCreateOrModifyRsp, err error) {
@@ -165,13 +162,23 @@ func (i *DB) Page(ctx *pb.Context, req *pb.DbPageReq) (rsp *pb.DbPageRsp, err er
 	//获取分页数据
 	models, err := render.DbInfo.Page(start, end)
 	if err != nil {
+		log.Errorf("failed to find db through page,[start=%d] [end=%d] [err=%v]", start, end, err)
+		return nil, pb.ToError(pb.E_SERVER_ERROR, pb.P_SERVER_ERROR)
+	}
+
+	//获取分页总数据
+	count, err := render.DbInfo.PageCount()
+	if err != nil {
+		log.Errorf("failed to find total count,[err=%v]", err)
 		return nil, pb.ToError(pb.E_SERVER_ERROR, pb.P_SERVER_ERROR)
 	}
 
 	rsp = &pb.DbPageRsp{
-		IsMore:   1, //1-否 2-是
-		PageNo:   req.PageNo,
-		PageSize: req.PageSize,
+		Page: &pb.PageRsp{
+			Current:  req.PageNo,
+			PageSize: req.PageSize,
+			Total:    count,
+		},
 	}
 
 	if models == nil || len(models) <= 0 {
@@ -183,8 +190,7 @@ func (i *DB) Page(ctx *pb.Context, req *pb.DbPageReq) (rsp *pb.DbPageRsp, err er
 	for i, v := range models {
 		tmp[i] = v.ToDbInfo()
 	}
-	rsp.Dbs = tmp
-	rsp.IsMore = 2
+	rsp.List = tmp
 
 	return rsp, nil
 }
@@ -280,6 +286,47 @@ func (i *DB) Connect(ctx *pb.Context, req *pb.DbConnectReq) (rsp *pb.DbConnectRs
 	}
 
 	rsp.TableName = tables
+
+	return rsp, nil
+}
+
+//表模型
+func (i *DB) TableModel(ctx *pb.Context, req *pb.DbTableModelReq) (rsp *pb.DbTableModelRsp, err error) {
+
+	if connectMp == nil {
+		return nil, pb.ToError(pb.E_NOt_FOUND, pb.P_PLEASE_CONNECT_DB)
+	}
+
+	client, ok := connectMp[req.Key]
+	if !ok {
+		log.Warnf("not found db though key,[key=%s]", req.Key)
+		return nil, pb.ToError(pb.E_NOt_FOUND, pb.P_NOT_FOUND_DB)
+	}
+	row, err := client.DB().Query(fmt.Sprintf("DESCRIBE %s", req.Name))
+	if err != nil {
+		return nil, pb.ToError(pb.E_DB_CONNECT_FAIL, err.Error())
+	}
+	defer row.Close()
+
+	data := make([]*pb.Model, 0, 3)
+	for row.Next() {
+		var field, typ, nul, key, defau, extra sql.NullString
+		err = row.Scan(&field, &typ, &nul, &key, &defau, &extra)
+		if err != nil {
+			log.Error(err)
+			return nil, pb.ToError(pb.E_SERVER_ERROR, err.Error())
+		}
+		tmp := &pb.Model{
+			Field: field.String,
+			Type:  typ.String,
+		}
+		data = append(data, tmp)
+	}
+	str := pb.ToModel(req.Name, data)
+
+	rsp = &pb.DbTableModelRsp{
+		Model: str,
+	}
 
 	return rsp, nil
 }

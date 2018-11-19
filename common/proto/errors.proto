@@ -6,6 +6,7 @@ enum E{
     INVALID_ARGUMENT = 1; //无效的参数
     SERVER_ERROR = 2; //服务异常
     NO_DATA=3;//没有数据
+    NOt_FOUND=4;//没有发现
 
     //db
     DB_NAME_EMPTY=1001001;//名称为空

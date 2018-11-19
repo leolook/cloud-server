@@ -12,6 +12,7 @@ type DBService interface {
 	Page(*pb.Context, *pb.DbPageReq) (*pb.DbPageRsp, error)
 	AllName(*pb.Context, *pb.DbAllNameReq) (*pb.DbAllNameRsp, error)
 	Connect(*pb.Context, *pb.DbConnectReq) (*pb.DbConnectRsp, error)
+	TableModel(*pb.Context, *pb.DbTableModelReq) (*pb.DbTableModelRsp, error)
 }
 
 var DB DBService = &impl.DB{}
