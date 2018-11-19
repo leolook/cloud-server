@@ -2,6 +2,7 @@ package main
 
 import (
 	"cloud-server/app/tool/web"
+	"cloud-server/lib/log"
 	"github.com/gin-gonic/gin"
 )
 
@@ -9,6 +10,7 @@ func init() {
 }
 
 func main() {
+	log.Infof("start init")
 	g := gin.New()
 	r := g.Group("tool")
 	r.POST("db/createOrModify", web.DB{}.CreateOrModify)
@@ -17,5 +19,6 @@ func main() {
 	r.GET("db/allName", web.DB{}.AllName)
 	r.POST("db/connect", web.DB{}.Connect)
 	r.POST("db/tableModel", web.DB{}.TableModel)
-	g.Run("0.0.0.0:2030")
+	g.Run("172.17.199.149:2030")
+	log.Infof("start server")
 }
