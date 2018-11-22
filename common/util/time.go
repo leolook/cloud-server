@@ -1,7 +1,7 @@
 package util
 
 import (
-	log "lib/xlog"
+	"cloud-server/lib/log"
 	"time"
 )
 
