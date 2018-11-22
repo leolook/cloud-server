@@ -71,11 +71,6 @@ func init_xlog() error {
 	return nil
 }
 
-func fin_xlog() error {
-	g_logger.Sugar().Sync()
-	return nil
-}
-
 func init() {
 
 	//flag.IntVar(&MaxSize, "max_log_size", 10*1024*1024, "max log file size")

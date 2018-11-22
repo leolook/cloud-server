@@ -1,7 +1,7 @@
 package sqlite
 
 import (
-	log "cloud-server/lib/log"
+	"cloud-server/lib/log"
 	"flag"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"

@@ -3,7 +3,7 @@ package web
 import (
 	"cloud-server/app/tool/service"
 	"cloud-server/common/pb"
-	log "cloud-server/lib/log"
+	"cloud-server/lib/log"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

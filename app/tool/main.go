@@ -19,6 +19,6 @@ func main() {
 	r.GET("db/allName", web.DB{}.AllName)
 	r.POST("db/connect", web.DB{}.Connect)
 	r.POST("db/tableModel", web.DB{}.TableModel)
-	g.Run("172.17.199.149:2030")
+	g.Run("0.0.0.0:2030")
 	log.Infof("start server")
 }
