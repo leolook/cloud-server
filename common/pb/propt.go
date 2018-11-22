@@ -12,6 +12,8 @@ const (
 	P_OPTIN_EMPTY      = "请选择一项"
 	P_KEY_EMPTY        = "key不能为空"
 	P_TABLE_NAME_EMPTY = "表名不能为空"
+	P_IP_IN_VALID      = "ip不合法"
+	P_PORT_IN_VALID    = "端口号不合法，不在(1-65535)之间"
 )
 
 const (

@@ -6,6 +6,7 @@ import (
 	"cloud-server/lib/log"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"regexp"
 )
 
 type DB struct{}
@@ -55,6 +56,22 @@ func (DB) CreateOrModify(c *gin.Context) {
 	if req.Db.Password == "" {
 		log.Warnf("password can no be empty,[password=%v]", req.Db.Password)
 		c.JSON(http.StatusOK, pb.ResponseToFail(pb.E_INVALID_ARGUMENT, pb.P_PASSWORD_EMPTY))
+		return
+	}
+
+	//ip校验
+	reg := regexp.MustCompile(`((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))`)
+	isValid := reg.MatchString(req.Db.Ip)
+	if !isValid {
+		log.Warnf("ip is wrong,[ip=%v]", req.Db.Ip)
+		c.JSON(http.StatusOK, pb.ResponseToFail(pb.E_INVALID_ARGUMENT, pb.P_IP_IN_VALID))
+		return
+	}
+
+	//端口校验
+	if req.Db.Port < 1 || req.Db.Port > 65535 {
+		log.Warnf("port is not in(1-65532),[port=%d]", req.Db.Port)
+		c.JSON(http.StatusOK, pb.ResponseToFail(pb.E_INVALID_ARGUMENT, pb.P_PORT_IN_VALID))
 		return
 	}
 
