@@ -45,6 +45,9 @@ func ToModel(tableName string, list []*Model) string {
 }
 
 func field2Comment(comment string) string {
+	if comment == "" {
+		return ""
+	}
 	return fmt.Sprintf("//%s", comment)
 }
 
