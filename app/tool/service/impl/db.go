@@ -311,7 +311,7 @@ func (i *DB) TableModel(ctx *pb.Context, req *pb.DbTableModelReq) (rsp *pb.DbTab
 	data := make([]*pb.Model, 0, 3)
 	for row.Next() {
 		var field, typ, comment, str sql.NullString
-		err = row.Scan(&field, &typ, &str, &str, &str, &str, &comment)
+		err = row.Scan(&field, &typ, &str, &str, &str, &str, &str, &str, &comment)
 		if err != nil {
 			log.Error(err)
 			return nil, pb.ToError(pb.E_SERVER_ERROR, err.Error())
