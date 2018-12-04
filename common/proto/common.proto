@@ -6,3 +6,8 @@ message PageRsp{
    int32 pageSize=2;
    int32 total=3;//总页数
 }
+
+message Sorter{
+   string field=1;//字段
+   string order=2;//排序
+}

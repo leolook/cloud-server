@@ -41,6 +41,8 @@ func ToModel(tableName string, list []*Model) string {
 	}
 
 	str := fmt.Sprintf("type %s struct {\n%s}", head2Upper(field2JSON(tableName)), buf.String())
+	fmt.Println(str)
+
 	return str
 }
 
@@ -126,6 +128,11 @@ func space(num int) string {
 		tmp[i] = 32
 	}
 	return string(tmp)
+	//var str string
+	//for i := 0; i < num; i++ {
+	//	str += "&nbsp"
+	//}
+	//return str
 }
 
 func field2JSON(field string) string {

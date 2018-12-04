@@ -157,10 +157,34 @@ func (i *DB) Page(ctx *pb.Context, req *pb.DbPageReq) (rsp *pb.DbPageRsp, err er
 	start = (req.PageNo - 1) * req.PageSize
 	end = req.PageSize
 
+	var field, order string
+	if req.Sorter != nil && req.Sorter.Field != "" && req.Sorter.Order != "" {
+		field = req.Sorter.Field
+		switch req.Sorter.Order {
+		case "ascend":
+			{
+				order = "asc"
+			}
+		case "descend":
+			{
+				order = "desc"
+			}
+		}
+	} else {
+		field = "id"
+		order = "desc"
+	}
+
 	render := dao.Render()
 
 	//获取分页数据
-	models, err := render.DbInfo.Page(start, end)
+	basePage := &dao.BasePage{
+		Start: start,
+		End:   end,
+		Field: field,
+		Order: order,
+	}
+	models, err := render.DbInfo.Page(basePage)
 	if err != nil {
 		log.Errorf("failed to find db through page,[start=%d] [end=%d] [err=%v]", start, end, err)
 		return nil, pb.ToError(pb.E_SERVER_ERROR, pb.P_SERVER_ERROR)
@@ -329,5 +353,20 @@ func (i *DB) TableModel(ctx *pb.Context, req *pb.DbTableModelReq) (rsp *pb.DbTab
 		Model: str,
 	}
 
+	return rsp, nil
+}
+
+//删除
+func (DB) Del(ctx *pb.Context, req *pb.DbDelReq) (rsp *pb.DbDelRsp, err error) {
+
+	render := dao.Render()
+
+	//删除项
+	err = render.DbInfo.Del(req.Ids...)
+	if err != nil {
+		log.Errorf("failed to del db option through id,[ids=%v] [err=%v]", req.Ids, err)
+		return nil, pb.ToError(pb.E_SERVER_ERROR, pb.P_SERVER_ERROR)
+	}
+	rsp = &pb.DbDelRsp{}
 	return rsp, nil
 }

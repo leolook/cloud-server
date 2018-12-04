@@ -35,6 +35,7 @@ message DbDetailByIDRsp{
 message DbPageReq{
    int32 pageNo=1;
    int32 pageSize=2;
+   Sorter sorter=3;
 }
 
 //数据库分页
@@ -76,4 +77,14 @@ message DbTableModelReq{
 //表模型
 message DbTableModelRsp{
    string model=1;
+}
+
+//删除
+message DbDelReq{
+   repeated int64 ids=1;
+}
+
+//删除
+message DbDelRsp{
+
 }

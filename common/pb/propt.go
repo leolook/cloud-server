@@ -14,6 +14,8 @@ const (
 	P_TABLE_NAME_EMPTY = "表名不能为空"
 	P_IP_IN_VALID      = "ip不合法"
 	P_PORT_IN_VALID    = "端口号不合法，不在(1-65535)之间"
+	P_DEL_OPTION_EMPTY = "删除项为空"
+	P_ID_LESS_ZERO     = "id有小于或等于0"
 )
 
 const (

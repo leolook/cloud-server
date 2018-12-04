@@ -16,4 +16,6 @@ service ToolService{
    rpc DbConnect(DbConnectReq)returns (DbConnectRsp);
    //表模型
    rpc DbTableModel(DbTableModelReq)returns (DbTableModelRsp);
+   //删除
+   rpc DbDel(DbDelReq) returns (DbDelRsp);
 }

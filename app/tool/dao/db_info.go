@@ -33,17 +33,34 @@ type DbInfoModeler interface {
 	FindByName(name string) ([]*DbInfoModel, error)
 	FindByID(id ...int64) ([]*DbInfoModel, error)
 	Modify(model *DbInfoModel) error
-	Page(start, end int32) ([]*DbInfoModel, error)
+	Page(v *BasePage) ([]*DbInfoModel, error)
 	PageCount() (int32, error)
 	AllName() ([]*DbInfoModel, error)
+	Del(ids ...int64) error
 }
 
 type DbInfoDao struct {
 	Base
 }
 
+//删除
+func (t *DbInfoDao) Del(ids ...int64) error {
+
+	str := "update db_info set delete_at=1 where "
+	if len(ids) > 1 {
+		str += "id in(?)"
+	} else {
+		str += "id=?"
+	}
+
+	if err := t.DB.Exec(str, ids).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 func (t *DbInfoDao) AllName() ([]*DbInfoModel, error) {
-	str := "select id,name from db_info where delete_at =0 order by id desc "
+	str := "select id,name from db_info where delete_at=0 order by id desc "
 
 	var models []*DbInfoModel
 	row := t.DB.Raw(str).Scan(&models)
@@ -55,12 +72,12 @@ func (t *DbInfoDao) AllName() ([]*DbInfoModel, error) {
 	return nil, err
 }
 
-func (t *DbInfoDao) Page(start, end int32) ([]*DbInfoModel, error) {
+func (t *DbInfoDao) Page(v *BasePage) ([]*DbInfoModel, error) {
 
-	str := "select * from db_info where delete_at =0 order by id desc limit ?,?"
+	str := fmt.Sprintf("select * from db_info where delete_at=0 order by %s %s limit ?,?", v.Field, v.Order)
 
 	var models []*DbInfoModel
-	row := t.DB.Raw(str, start, end).Scan(&models)
+	row := t.DB.Raw(str, v.Start, v.End).Scan(&models)
 
 	ok, err := t.checkRow(row)
 	if ok && models != nil && len(models) > 0 {
@@ -71,7 +88,7 @@ func (t *DbInfoDao) Page(start, end int32) ([]*DbInfoModel, error) {
 
 func (t *DbInfoDao) PageCount() (int32, error) {
 
-	str := "select count(id) from db_info where delete_at =0"
+	str := "select count(id) from db_info where delete_at=0"
 
 	var count int32
 	row := t.DB.Raw(str).Count(&count)

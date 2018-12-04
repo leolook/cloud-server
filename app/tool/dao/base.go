@@ -7,6 +7,11 @@ import (
 	"strings"
 )
 
+type BasePage struct {
+	Start, End   int32
+	Field, Order string
+}
+
 type Base struct {
 	DB *gorm.DB
 }

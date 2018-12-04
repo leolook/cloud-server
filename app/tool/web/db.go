@@ -217,3 +217,35 @@ func (DB) TableModel(c *gin.Context) {
 
 	c.JSON(http.StatusOK, pb.ResponseToWin(rsp))
 }
+
+//删除
+func (DB) Del(c *gin.Context) {
+	//参数解析
+	var req pb.DbDelReq
+	err := c.BindJSON(&req)
+	if err != nil {
+		log.Errorf("failed to bind json,[err=%v]", err)
+		c.JSON(http.StatusOK, pb.ResponseToFail(pb.E_INVALID_ARGUMENT, pb.P_INVALID_ARGUMENT))
+		return
+	}
+
+	if req.Ids == nil || len(req.Ids) == 0 {
+		c.JSON(http.StatusOK, pb.ResponseToFail(pb.E_INVALID_ARGUMENT, pb.P_DEL_OPTION_EMPTY))
+		return
+	}
+
+	for _, v := range req.Ids {
+		if v <= 0 {
+			c.JSON(http.StatusOK, pb.ResponseToFail(pb.E_INVALID_ARGUMENT, pb.P_ID_LESS_ZERO))
+			return
+		}
+	}
+
+	rsp, err := service.DB.Del(pb.NewContext(c), &req)
+	if err != nil {
+		c.JSON(http.StatusOK, pb.ResponseWithError(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, pb.ResponseToWin(rsp))
+}
