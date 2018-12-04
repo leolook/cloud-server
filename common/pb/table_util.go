@@ -1,123 +1,149 @@
 package pb
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
 )
 
 type Model struct {
-	Field string
-	Type  string
+	Field   string
+	Type    string
+	Comment string
 }
 
-func ToModel(table string, data []*Model) string {
-	name := Hump(table)
-	ru := []rune(name)
-	name = strings.ToUpper(string(ru[0])) + string(ru[1:])
-	str := "\n"
-	str += "type " + name + " struct {\n"
+func ToModel(tableName string, list []*Model) string {
+	maxNameLen := fieldMaxLen(list)
+	maxFieldLen := fieldTypeMaxLen(list)
+	maxTagLen := fieldTagMaxLen(list)
 
-	num := MaxSpace(data) + 3
-	for _, v := range data {
-		name := Field(v.Field)
-		space := Space(num - len(name))
-		name = fmt.Sprintf("%s %s", name, space)
-		typ := Typ(v.Type)
-		typ = fmt.Sprintf("%s %s", typ, Space(8-len(typ)))
-		tag := fmt.Sprintf("%s %s", JSONTag(v.Field, 0), GormTag(v.Field))
+	var buf bytes.Buffer
+	for _, v := range list {
 
-		str += fmt.Sprintf("   %s %s `%s`\n", name, typ, tag)
+		jsonName := field2JSON(v.Field)
+		name := head2Upper(jsonName)
+		fieldName := field2Type(v.Type)
+		tag := fieldTag(fieldJSONTag(jsonName), fieldGormTag(v.Field))
+
+		buf.WriteString(space(5))
+		//field
+		buf.WriteString(name)
+		buf.WriteString(space(maxNameLen - len(name) + 1))
+		//type
+		buf.WriteString(fieldName)
+		buf.WriteString(space(maxFieldLen - len(fieldName) + 1))
+		//tag
+		buf.WriteString(tag)
+		buf.WriteString(space(maxTagLen - len(tag) + 1))
+		//comment
+		buf.WriteString(field2Comment(v.Comment))
+		buf.WriteString("\n")
 	}
 
-	str += "}"
-	str += "\n"
+	str := fmt.Sprintf("type %s struct {\n%s}", head2Upper(field2JSON(tableName)), buf.String())
 	return str
 }
 
-//max length field
-func MaxSpace(data []*Model) int {
-	num := 1
-	for _, v := range data {
-		if len(Field(v.Field)) > num {
-			num = len(Field(v.Field))
-		}
+func field2Comment(comment string) string {
+	return fmt.Sprintf("//%s", comment)
+}
+
+func fieldTag(tag ...string) string {
+	var str string
+	for _, v := range tag {
+		str += v + " "
 	}
-	return num
+	return fmt.Sprintf("`%s`", str)
 }
 
-func Space(num int) string {
-	space := ""
-	for i := 0; i < num; i++ {
-		space += " "
-	}
-	return space
+func fieldGormTag(name string) string {
+	return fmt.Sprintf(`gorm:"column:%s"`, name)
 }
 
-//struct field
-func Field(field string) string {
-	ru := []rune(Hump(field))
-	return strings.ToUpper(string(ru[0])) + string(ru[1:])
+func fieldJSONTag(jsonName string) string {
+	return fmt.Sprintf(`json:"%s"`, jsonName)
 }
 
-//struct type
-func Typ(typ string) string {
+func field2Type(tmp string) string {
 
-	if strings.Contains(typ, "int") {
+	if strings.Contains(tmp, "int") {
 		return "int64"
 	}
 
-	if strings.Contains(typ, "varchar") {
+	if strings.Contains(tmp, "varchar") {
 		return "string"
 	}
 
-	if strings.Contains(typ, "double") {
+	if strings.Contains(tmp, "decimal") {
 		return "float64"
 	}
 
-	if strings.Contains(typ, "timestamp") {
+	if strings.Contains(tmp, "timestamp") || strings.Contains(tmp, "date") {
 		return "*time.Time"
 	}
 
 	return "interface{}"
 }
 
-//struct tag
-//0-保持
-//1-驼峰
-func JSONTag(field string, typ int) string {
-	tag := field
-	if typ == 1 {
-		tag = Hump(tag)
+func fieldMaxLen(list []*Model) int {
+	var max, size int
+	for _, v := range list {
+		size = len(v.Field)
+		if len(v.Field) > max {
+			max = size
+		}
 	}
-	str := fmt.Sprintf(`json:"%s"`, tag)
-	return str
+	return max
 }
 
-//struct tag
-//0-保持
-//1-驼峰
-func GormTag(field string) string {
-	str := fmt.Sprintf(`gorm:"column:%s"`, field)
-	return str
+func fieldTagMaxLen(list []*Model) int {
+	var max, size int
+	for _, v := range list {
+		size = len(fieldTag(fieldJSONTag(field2JSON(v.Field)), fieldGormTag(v.Field)))
+		if size > max {
+			max = size
+		}
+	}
+	return max
 }
 
-//驼峰
-//body_age body + Age
-//body_age_tmp body+Age+Tmp
-func Hump(field string) string {
-	if strings.Index(field, "_") == -1 {
+func fieldTypeMaxLen(list []*Model) int {
+	var max int
+	for _, v := range list {
+		if len(field2Type(v.Type)) > max {
+			max = len(v.Field)
+		}
+	}
+	return max
+}
+
+func space(num int) string {
+	tmp := make([]rune, num)
+	for i, _ := range tmp {
+		tmp[i] = 32
+	}
+	return string(tmp)
+}
+
+func field2JSON(field string) string {
+
+	if !strings.Contains(field, "_") {
 		return field
 	}
-	arr := strings.Split(field, "_")
 
-	if len(arr) == 1 {
-		return arr[0]
+	var str string
+	for i, tmp := range strings.Split(field, "_") {
+		if i == 0 {
+			str += tmp
+		} else {
+			str += head2Upper(tmp)
+		}
 	}
 
-	field = arr[0]
-	for i := 1; i < len(arr); i++ {
-		ru := []rune(arr[i])
-		field += strings.ToUpper(string(ru[0])) + string(ru[1:])
-	}
-	return field
+	return str
+}
+
+func head2Upper(str string) string {
+	tmp := []rune(str)
+	return strings.ToUpper(string(tmp[0])) + string(tmp[1:])
 }

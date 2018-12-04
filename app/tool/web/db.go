@@ -188,7 +188,7 @@ func (DB) Connect(c *gin.Context) {
 	c.JSON(http.StatusOK, pb.ResponseToWin(rsp))
 }
 
-//连接
+//表模型
 func (DB) TableModel(c *gin.Context) {
 	//参数解析
 	var req pb.DbTableModelReq

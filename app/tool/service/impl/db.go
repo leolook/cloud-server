@@ -302,7 +302,7 @@ func (i *DB) TableModel(ctx *pb.Context, req *pb.DbTableModelReq) (rsp *pb.DbTab
 		log.Warnf("not found db though key,[key=%s]", req.Key)
 		return nil, pb.ToError(pb.E_NOt_FOUND, pb.P_NOT_FOUND_DB)
 	}
-	row, err := client.DB().Query(fmt.Sprintf("DESCRIBE %s", req.Name))
+	row, err := client.DB().Query(fmt.Sprintf("show full fields from %s", req.Name))
 	if err != nil {
 		return nil, pb.ToError(pb.E_DB_CONNECT_FAIL, err.Error())
 	}
@@ -310,15 +310,16 @@ func (i *DB) TableModel(ctx *pb.Context, req *pb.DbTableModelReq) (rsp *pb.DbTab
 
 	data := make([]*pb.Model, 0, 3)
 	for row.Next() {
-		var field, typ, nul, key, defau, extra sql.NullString
-		err = row.Scan(&field, &typ, &nul, &key, &defau, &extra)
+		var field, typ, comment, str sql.NullString
+		err = row.Scan(&field, &typ, &str, &str, &str, &str, &comment)
 		if err != nil {
 			log.Error(err)
 			return nil, pb.ToError(pb.E_SERVER_ERROR, err.Error())
 		}
 		tmp := &pb.Model{
-			Field: field.String,
-			Type:  typ.String,
+			Field:   field.String,
+			Type:    typ.String,
+			Comment: comment.String,
 		}
 		data = append(data, tmp)
 	}
