@@ -1,4 +1,4 @@
-package web
+package controller
 
 import (
 	"cloud-server/app/tool/service"

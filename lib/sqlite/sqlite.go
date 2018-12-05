@@ -1,25 +1,20 @@
 package sqlite
 
 import (
+	"cloud-server/common/flag"
 	"cloud-server/lib/log"
-	"flag"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 var (
-	sqliteAddr string
-	Db         *gorm.DB
+	Db *gorm.DB
 )
 
 func init() {
-
-	flag.StringVar(&sqliteAddr, "sqliteAddr", "tool.db", "sqlite address")
-	flag.Parse()
-
-	db, err := gorm.Open("sqlite3", sqliteAddr)
+	db, err := gorm.Open("sqlite3", flag.SqliteAddr)
 	if err != nil {
-		log.Fatalf("failed to open sqlite db,[addr=%s] [err=%v]", sqliteAddr, err)
+		log.Fatalf("failed to open sqlite3 db,[addr=%s] [err=%v]", flag.SqliteAddr, err)
 		return
 	}
 	Db = db

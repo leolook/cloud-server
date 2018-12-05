@@ -1,4 +1,4 @@
-package web
+package controller
 
 import (
 	"bytes"
@@ -8,15 +8,30 @@ import (
 	"testing"
 )
 
-type UserInfo struct {
-	Id   string
-	Name string
-}
-
 func TestDB_AllName(t *testing.T) {
 	str := "  "
 
 	fmt.Println([]rune(str))
+}
+
+type Post struct {
+}
+
+type Get struct {
+}
+
+type Test struct {
+	Post
+	Get
+}
+
+//method=post
+func (t *Post) Connect() {
+
+}
+
+func TestDB_Connect(t *testing.T) {
+
 }
 
 func TestDB_CreateOrModify(t *testing.T) {
