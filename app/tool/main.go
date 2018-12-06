@@ -20,6 +20,5 @@ func main() {
 		dbRoute.POST("tableModel", db.TableModel)         //表模型
 		dbRoute.POST("del", db.Del)                       //删除
 	}
-
 	g.Run(flag.ServerAddr)
 }

@@ -14,3 +14,4 @@ go_build_main_go
 main
 app/too/tool
 */.out
+*/.db

@@ -40,7 +40,7 @@ func ToModel(tableName string, list []*Model) string {
 		buf.WriteString("\n")
 	}
 
-	str := fmt.Sprintf("type %s struct {\n%s}", head2Upper(field2JSON(tableName)), buf.String())
+	str := fmt.Sprintf("type %sModel struct {\n%s}", head2Upper(field2JSON(tableName)), buf.String())
 	fmt.Println(str)
 
 	return str
