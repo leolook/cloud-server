@@ -1,7 +1,7 @@
 .idea
 *.iml
-*.vscode
-*.db
+**/*.db
+**/*.vscode
 *.out
 bin
 **/*.exe
