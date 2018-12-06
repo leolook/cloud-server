@@ -1,16 +1,2 @@
 .idea
-*.iml
-.db
-**/*.vscode
-*.out
-bin
-**/*.exe
-coverprofile
-config.yml
-.vscode
-.project
-pkg/**
-cloud
-file
-go_build_main_go
-main
+*.db
