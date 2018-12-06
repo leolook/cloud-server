@@ -1,6 +1,6 @@
 .idea
 *.iml
-**/*.db
+.db
 **/*.vscode
 *.out
 bin
@@ -14,4 +14,3 @@ cloud
 file
 go_build_main_go
 main
-app/too/tool
