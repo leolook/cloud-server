@@ -1,13 +1,21 @@
 #!/bin/sh
 ###编译
-go build
+name=tool
 
-path=/root/hwt/project/tool
+mkdir -p ${name}/conf
+mkdir -p ${name}/bin
+
+go build main.go
 
 ###移动
-mv tool ${path}/bin/tool
-mv online_conf.json ${path}/conf/conf.json
-mv pm2.json ${path}/conf/pm2.json
+mv main ${name}/bin/${name}
+mv online_conf.json ${name}/conf/conf.json
+mv pm2.json ${name}/conf/pm2.json
+
+path=/root/hwt/project/${name}
+
+####移动
+mv ${name} ${path}
 
 ###切入目录
 cd ${path}/conf/
