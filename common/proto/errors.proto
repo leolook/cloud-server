@@ -17,4 +17,3 @@ enum E{
     DB_NAME_REPEATED=1001009;//名称重复
     DB_CONNECT_FAIL=1001010;//连接失败
 }
-

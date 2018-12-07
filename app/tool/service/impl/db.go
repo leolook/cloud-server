@@ -358,9 +358,7 @@ func (i *DB) TableModel(ctx *pb.Context, req *pb.DbTableModelReq) (rsp *pb.DbTab
 
 //删除
 func (DB) Del(ctx *pb.Context, req *pb.DbDelReq) (rsp *pb.DbDelRsp, err error) {
-
 	render := dao.Render()
-
 	//删除项
 	err = render.DbInfo.Del(req.Ids...)
 	if err != nil {
