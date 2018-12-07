@@ -4,6 +4,7 @@ name=tool
 
 mkdir -p ${name}/conf
 mkdir -p ${name}/bin
+mkdir -p ${name}/logs
 
 go build main.go
 
