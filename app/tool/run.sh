@@ -5,15 +5,15 @@ path=/root/hwt/project/${name}
 
 ###如果文件夹不存在，创建文件夹
 if [ ! -d "${path}/bin" ]; then
-   mkdir ${path}/bin
+   mkdir -p ${path}/bin
 fi
 
 if [ ! -d "${path}/conf" ]; then
-   mkdir ${path}/conf
+   mkdir -p ${path}/conf
 fi
 
 if [ ! -d "${path}/logs" ]; then
-   mkdir ${path}/logs
+   mkdir -p ${path}/logs
 fi
 
 ###编译
