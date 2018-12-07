@@ -22,4 +22,4 @@ mv ${name} ${path}
 cd ${path}/conf/
 
 ###执行命令
-###pm2 start pm2.json
+pm2 start pm2.json
