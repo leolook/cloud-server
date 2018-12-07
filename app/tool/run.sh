@@ -1,22 +1,28 @@
 #!/bin/sh
-###编译
 name=tool
-
-mkdir -p ${name}/conf
-mkdir -p ${name}/bin
-mkdir -p ${name}/logs
-
-go build main.go
-
-###移动
-mv main ${name}/bin/${name}
-cp online_conf.json ${name}/conf/conf.json
-cp pm2.json ${name}/conf/pm2.json
 
 path=/root/hwt/project/${name}
 
-####移动
-mv ${name} ${path}
+###如果文件夹不存在，创建文件夹
+if [ ! -d "${path}/bin" ]; then
+   mkdir ${path}/bin
+fi
+
+if [ ! -d "${path}/conf" ]; then
+   mkdir ${path}/conf
+fi
+
+if [ ! -d "${path}/logs" ]; then
+   mkdir ${path}/logs
+fi
+
+###编译
+go build main.go
+
+###移动
+mv main ${path}/bin/${name}
+cp online_conf.json ${path}/conf/conf.json
+cp pm2.json ${path}/conf/pm2.json
 
 ###切入目录
 cd ${path}/conf/
