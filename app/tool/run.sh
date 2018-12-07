@@ -2,23 +2,15 @@
 ###编译
 go build
 
+path=/root/hwt/project/tool
+
 ###移动
-mv tool /root/hwt/project/tool/tool
+mv tool ${path}/bin/tool
+mv online_conf.json ${path}/conf/conf.json
+mv pm2.json ${path}/conf/pm2.json
 
 ###切入目录
-cd /root/hwt/project/tool
+cd ${path}/conf/
 
-###停止服务
-value=`netstat -lnp | grep 2030`
-if [ "${value}" != "" ]
-then
-  tmp=${value#*LISTEN}
-  pid=${tmp%%/*}
-  echo ${pid}
-  kill ${pid}
-else
-  echo "no server"
-fi
-
-###启动
-nohup ./tool -server=172.17.199.149:2030 -sqlite=db/tool.db &
+###执行命令
+###pm2 start pm2.json

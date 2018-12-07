@@ -2,20 +2,12 @@ package main
 
 import (
 	"cloud-server/app/tool/controller"
-	conf "cloud-server/common/flag"
-	"flag"
-	"fmt"
+	"cloud-server/common/flag"
 	"github.com/gin-gonic/gin"
 )
 
-func init() {
-	var str string
-	flag.StringVar(&str, "flagfile", "", "flagfile")
-	flag.Parse()
-	fmt.Println(str)
-}
-
 func main() {
+	flag.Start()
 	g := gin.New()
 	route := g.Group("tool")
 	{
@@ -29,5 +21,5 @@ func main() {
 		dbRoute.POST("tableModel", db.TableModel)         //表模型
 		dbRoute.POST("del", db.Del)                       //删除
 	}
-	g.Run(conf.ServerAddr)
+	g.Run(flag.ServerAddr)
 }
