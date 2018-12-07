@@ -1,0 +1,4 @@
+{
+  "server":"0.0.0.0:2030",
+  "sqlite":"/Users/huwentao/go/src/cloud-server/bin/db/tool.db"
+}
