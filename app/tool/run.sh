@@ -10,8 +10,8 @@ go build main.go
 
 ###移动
 mv main ${name}/bin/${name}
-mv online_conf.json ${name}/conf/conf.json
-mv pm2.json ${name}/conf/pm2.json
+cp online_conf.json ${name}/conf/conf.json
+cp pm2.json ${name}/conf/pm2.json
 
 path=/root/hwt/project/${name}
 
