@@ -17,7 +17,7 @@ func Render() *Rend {
 	}
 
 	base := Base{
-		DB: sqlite.Db,
+		DB: sqlite.Get(),
 	}
 
 	rend = &Rend{

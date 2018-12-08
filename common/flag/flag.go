@@ -14,14 +14,13 @@ var (
 	path       string
 )
 
-func init() {
+func InitFlag() {
+
 	flag.StringVar(&path, "conf", "../conf/dev_conf.json", "conf")
-	flag.StringVar(&SqliteAddr, "sqlite", "tool.db", "sqlite address")
+	flag.StringVar(&SqliteAddr, "sqlite", "tool.db2", "sqlite address")
 	flag.StringVar(&ServerAddr, "server", "0.0.0.0:2030", "server address")
 	flag.Parse()
-}
 
-func Start() {
 	//读取配置文件内容
 	file, err := os.Open(path)
 	if err != nil {
@@ -54,6 +53,6 @@ func Start() {
 			log.Fatalf("failed to set flag,[err=%v]", err)
 			return
 		}
+		log.Infof("init flag:[key=%s] [value=%s]", k, v)
 	}
-
 }

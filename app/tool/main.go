@@ -3,11 +3,11 @@ package main
 import (
 	"cloud-server/app/tool/controller"
 	"cloud-server/common/flag"
+	"cloud-server/lib/sqlite"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	flag.Start()
 	g := gin.New()
 	route := g.Group("tool")
 	{
@@ -22,4 +22,9 @@ func main() {
 		dbRoute.POST("del", db.Del)                       //删除
 	}
 	g.Run(flag.ServerAddr)
+}
+
+func init() {
+	flag.InitFlag()
+	sqlite.InitDB()
 }

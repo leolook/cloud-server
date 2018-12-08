@@ -8,14 +8,23 @@ import (
 )
 
 var (
-	Db *gorm.DB
+	db  *gorm.DB
+	err error
 )
 
-func init() {
-	db, err := gorm.Open("sqlite3", flag.SqliteAddr)
+func InitDB() {
+	addr := flag.SqliteAddr
+	db, err = gorm.Open("sqlite3", addr)
 	if err != nil {
-		log.Fatalf("failed to open sqlite3 db,[addr=%s] [err=%v]", flag.SqliteAddr, err)
+		log.Fatalf("failed to open sqlite3 db,[addr=%s] [err=%v]", addr, err)
 		return
 	}
-	Db = db
+	log.Infof("init db:[addr=%s]", addr)
+}
+
+func Get() *gorm.DB {
+	if db == nil {
+		InitDB()
+	}
+	return db
 }
