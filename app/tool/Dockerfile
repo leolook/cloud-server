@@ -8,6 +8,4 @@ COPY online_conf.json conf.json
 
 EXPOSE 3030
 
-ENTRYPOINT ["./tool", "-conf=conf.json"]
-
-
+CMD ["./tool", "-conf=conf.json"]
