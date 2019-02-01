@@ -1,4 +1,8 @@
 
+#### golang 代码编译
+1. GOOS=linux GOARCH=amd64 go build -tags netgo
+2. 注意: 使用apline作为基础镜像,需要带上-tags netgo
+
 #### docker 编译
 1. docker build --rm -t hwtdocker/cloud:tool .
 
