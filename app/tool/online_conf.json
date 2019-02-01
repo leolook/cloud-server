@@ -1,4 +1,4 @@
 {
   "server":"172.17.199.149:3030",
-  "sqlite":"../db/tool.db"
+  "sqlite":"tool.db"
 }
