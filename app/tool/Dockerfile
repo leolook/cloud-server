@@ -9,10 +9,9 @@ RUN mkdir /app/db/
 
 COPY tool /app/tool
 COPY online_conf.json /app/conf.json
-COPY tool.db /app/db/tool.db
+COPY tool.db /app/tool.db
 
 WORKDIR /app/
-VOLUME ["/app/db/"]
 EXPOSE 3030
 
 CMD ["./tool", "-conf=conf.json"]
