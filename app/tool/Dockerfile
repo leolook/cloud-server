@@ -1,13 +1,12 @@
-FROM scratch
+FROM alpine
 
 MAINTAINER hwt
 LABEL cloud-server 1.0.0
 
-COPY tool tool
+COPY tool /
 COPY online_conf.json conf.json
-COPY tool.db tool.db
+COPY tool.db /
 
-VOLUME ["tool.db"]
 EXPOSE 3030
 
 CMD ["./tool", "-conf=conf.json"]
