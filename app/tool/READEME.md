@@ -1,4 +1,8 @@
 
+#### linux 系统，修改或者添加环境变量
+1. vim /etc/profile
+2. source /etc/profile 生效
+
 #### golang 代码编译
 1. GOOS=linux GOARCH=amd64 go build -tags netgo
 2. 注意: 使用apline作为基础镜像,需要带上-tags netgo,不然编译的文件不能在该基础镜像上运行
