@@ -7,7 +7,7 @@ COPY tool tool
 COPY online_conf.json conf.json
 COPY tool.db tool.db
 
-VOLUME tool.db
+VOLUME ["tool.db"]
 EXPOSE 3030
 
 CMD ["./tool", "-conf=conf.json"]
