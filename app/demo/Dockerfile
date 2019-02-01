@@ -12,4 +12,4 @@ COPY Dockfile /demo/Dockfile
 WORKDIR /demo/
 EXPOSE 330
 
-CMD ["./bin"]
+CMD ["./bin]
