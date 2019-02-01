@@ -1,4 +1,5 @@
-FROM alpine
+# 基础镜像
+FROM hwtdocker/cloud:alpine-sqlite
 
 MAINTAINER hwt
 LABEL cloud-server 1.0.0
