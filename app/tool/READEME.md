@@ -25,3 +25,4 @@
       container_linux.go:247: starting container process caused "process_linux.go:110:
       decoding init error from pipe caused \"read parent: connection reset by peer\""
   解决办法: 1. yum update 2.yum downgrade docker docker-client docker-common
+3. dokcer 进入容器前提是，容器运行是具有-d 后台运行的条件
