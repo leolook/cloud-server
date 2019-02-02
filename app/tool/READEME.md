@@ -16,6 +16,7 @@
 
 #### docker 运行
 1. docker run -itd -p 0.0.0.0:3030:3030/tcp -v /root/db/app/tool/tool.db:/app/tool.db --name=tool 8a01ed45d39c
+2. -v 是指将宿主机的文件或者目录挂载到docker内部,这样docker就能访问宿主机的文件;冒号前面是宿主机路径,冒号后面是容器路径,必须都是绝对路径
 
 #### docker 进入容器
 1. docker exec -it 5f31b7d05cf8 sh
