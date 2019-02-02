@@ -15,7 +15,7 @@
 2. docker push hwtdocker/cloud:tool
 
 #### docker 运行
-1. docker run -itd -p 0.0.0.0:3030:3030/tcp -v tool.db:/root/db/app/tool/tool.db --name=tool 9c047ad754b4
+1. docker run -itd -p 0.0.0.0:3030:3030/tcp -v /root/db/app/tool/tool.db:/app/tool.db --name=tool 8a01ed45d39c
 
 #### docker 进入容器
 1. docker exec -it 5f31b7d05cf8 sh
