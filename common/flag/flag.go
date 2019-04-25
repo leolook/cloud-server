@@ -16,7 +16,7 @@ var (
 
 func InitFlag() {
 
-	flag.StringVar(&path, "conf", "../conf/dev_conf.json", "conf")
+	flag.StringVar(&path, "conf", "/Users/huwentao/go/src/cloud-server/app/tool/dev_conf.json", "conf")
 	flag.StringVar(&SqliteAddr, "sqlite", "tool.db2", "sqlite address")
 	flag.StringVar(&ServerAddr, "server", "0.0.0.0:2030", "server address")
 	flag.Parse()
